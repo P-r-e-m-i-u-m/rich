@@ -453,6 +453,24 @@ def test_right_crop():
     assert text._spans == [Span(0, 3, "red")]
 
 
+@pytest.mark.parametrize(
+    'amount,expected_plain,expected_length',
+    [
+        (1, 'ab', 2),
+        (0, 'abc', 3),
+        (-1, 'abc', 3),
+        (3, '', 0),
+        (10, '', 0),
+    ],
+)
+def test_right_crop_out_of_range_amounts(amount, expected_plain, expected_length):
+    """https://github.com/Textualize/rich/issues/4265"""
+    text = Text('abc')
+    text.right_crop(amount)
+    assert text.plain == expected_plain
+    assert len(text) == expected_length
+
+
 def test_wrap_3():
     text = Text("foo bar baz")
     lines = text.wrap(Console(), 3)
